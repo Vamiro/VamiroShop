@@ -2,13 +2,17 @@
 
 public class MenuState : IState
 {
-    
-    
-    private string[] _menuOptions =
+    private readonly string[] _menuOptions =
     {
-        "Посмотреть меню и выбрать продукты.",
-        "Посмотреть корзину, убрать продукты из корзины или оформить заказ."
+        "Посмотреть меню и выбрать продукты.", "Посмотреть корзину, убрать продукты из корзины или оформить заказ."
     };
+
+    private readonly IStateMachine _stateMachine;
+
+    public MenuState(IStateMachine stateMachine)
+    {
+        _stateMachine = stateMachine;
+    }
 
     public void Enter()
     {
@@ -18,10 +22,7 @@ public class MenuState : IState
 
     private void ShowMenuOptions()
     {
-        for (int i = 0; i < _menuOptions.Length; i++)
-        {
-            Console.WriteLine($"{i + 1}. {_menuOptions[i]}");
-        }
+        for (var i = 0; i < _menuOptions.Length; i++) Console.WriteLine($"{i + 1}. {_menuOptions[i]}");
     }
 
     public void Exit()
@@ -31,25 +32,28 @@ public class MenuState : IState
 
     public void InputHandler()
     {
-        bool flag = true;
+        var flag = true;
         do
         {
             int n;
-            Int32.TryParse(Console.ReadLine(), out n);
-            switch (n)
-            {
-                case 1:
-                    Program.StateMachine.ChangeState(Program.MenuProductsState);
-                    flag = false;
-                    break;
-                case 2:
-                    Program.StateMachine.ChangeState(Program.BasketProductsState);
-                    flag = false;
-                    break;
-                default:
-                    Console.WriteLine("Пожалуйста выберите опцию из списка.");
-                    break;
-            }
+            var validInput = int.TryParse(Console.ReadLine(), out n);
+            if (validInput)
+                switch (n)
+                {
+                    case 1:
+                        _stateMachine.ChangeState<MenuProductsState>();
+                        flag = false;
+                        break;
+                    case 2:
+                        _stateMachine.ChangeState<BasketProductsState>();
+                        flag = false;
+                        break;
+                    default:
+                        Console.WriteLine("Пожалуйста, выберите опцию из списка.");
+                        break;
+                }
+            else
+                Console.WriteLine("Некорректный ввод. Пожалуйста, введите число.");
         } while (flag);
     }
 }

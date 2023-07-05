@@ -2,28 +2,30 @@
 
 public class BasketProducts
 {
-    public List<ProductInBasket> ProductsInBasket = new List<ProductInBasket>();
-
-    public void AddProductToBasket(int product, int count = 1)
+    public List<ProductInBasket> ProductsInBasket { get; }
+    
+    public BasketProducts()
     {
-        bool flag = false;
+        ProductsInBasket = new List<ProductInBasket>();
+    }
+    
+    public void AddProductToBasket(Product product, int count = 1)
+    {
+        var flag = false;
         foreach (var p in ProductsInBasket)
-        {
-            if (p.Product == Program.MenuProducts.GetProductByNumer(product))
+            if (p.Id == product.Id)
             {
                 p.AddCount(count);
                 Console.WriteLine(
-                    $"Количество \"{p.Product.Name}\" теперь равняется {p.Count} а цена составляет {p.TotalPrice}");
+                    $"Количество \"{p.Name}\" теперь равняется {p.Count} а цена составляет {p.TotalPrice}");
                 flag = true;
             }
-        }
 
         if (!flag)
         {
-            Product p = Program.MenuProducts.GetProductByNumer(product);
-            ProductsInBasket.Add(new ProductInBasket(p, count));
+            ProductsInBasket.Add(new ProductInBasket(product, count));
             Console.WriteLine(
-                $"Товар \"{p.Name}\" добавлен в корзину в количестве {count} а цена составляет {ProductsInBasket.Last().TotalPrice}");
+                $"Товар \"{product.Name}\" добавлен в корзину в количестве {count} а цена составляет {ProductsInBasket.Last().TotalPrice}");
         }
     }
 
@@ -31,28 +33,26 @@ public class BasketProducts
     {
         var p = GetProductInBasketByNumer(product);
         if (count == 0 || p.Count <= count)
-        {
             ProductsInBasket.Remove(p);
-        }
         else
-        {
             p.SubstractCount(count);
-        }
     }
 
     public void ShowBasketProducts()
     {
-        if (ProductsInBasket.Count == 0) Console.WriteLine("В корзине еще нет товаров");
+        if (ProductsInBasket.Count == 0)
+        {
+            Console.WriteLine("В корзине еще нет товаров");
+        }
         else
         {
             Console.WriteLine("{0, 3}. {1, -10} {2, -5} {3, -10} {4, -14}", '№', "название", "цена", "количество",
                 "финальная цена");
-            for (int i = 0; i < ProductsInBasket.Count; i++)
-            {
-                Console.WriteLine("{0, 3}. {1, -10} {2, -5} {3, -10} {4, -14}", i + 1, ProductsInBasket[i].Product.Name,
-                    ProductsInBasket[i].Product.Price, ProductsInBasket[i].Count, ProductsInBasket[i].TotalPrice);
-            }
-            Console.WriteLine($"Сумма заказа составляется {Program.BasketProducts.GetTotalPrice()}");
+            for (var i = 0; i < ProductsInBasket.Count; i++)
+                Console.WriteLine("{0, 3}. {1, -10} {2, -5} {3, -10} {4, -14}", i + 1, ProductsInBasket[i].Name,
+                    ProductsInBasket[i].Price, ProductsInBasket[i].Count, ProductsInBasket[i].TotalPrice);
+
+            Console.WriteLine($"Сумма заказа составляется {GetTotalPrice()}");
         }
     }
 
@@ -60,18 +60,16 @@ public class BasketProducts
     {
         ProductsInBasket.Clear();
     }
-    
-    public decimal GetTotalPrice()
+
+    private decimal GetTotalPrice()
     {
         decimal result = 0;
-        foreach (var p in ProductsInBasket)
-        {
-            result += p.TotalPrice;
-        }
+        foreach (var p in ProductsInBasket) result += p.TotalPrice;
+
         return result;
     }
 
-    public ProductInBasket GetProductInBasketByNumer(int i)
+    private ProductInBasket GetProductInBasketByNumer(int i)
     {
         return ProductsInBasket[i - 1];
     }

@@ -2,9 +2,9 @@
 
 public class Product
 {
-    public int Id;
-    public string Name;
-    public decimal Price;
+    public readonly int Id;
+    public readonly string Name;
+    public readonly decimal Price;
 
     public Product(string name, decimal price)
     {
@@ -15,11 +15,9 @@ public class Product
 
     private int CreateId(string name)
     {
-        int result = 0;
-        for (int i = 0; i < name.Length; i++)
-        {
-            result += name[i];
-        }
+        var result = 0;
+        foreach (var c in name)
+            result += c;
 
         return result;
     }

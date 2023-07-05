@@ -1,23 +1,33 @@
 ﻿using ConsoleApp3;
 using ConsoleApp3.Products;
 using ConsoleApp3.States;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using VamiroShop;
 
-class Program
+internal class Program
 {
-    public static StateMachine StateMachine = new StateMachine();
-    public static MenuProducts MenuProducts = new MenuProducts();
-    public static BasketProducts BasketProducts = new BasketProducts();
-    public static IState MenuState = new MenuState();
-    public static IState MenuProductsState = new MenuProductsState();
-    public static IState BasketProductsState = new BasketProductsState();
-
-    static void Main()
+    private static void Main(string[] args)
     {
-        MenuProducts.CreateProductsList();
+        var hostBuilder = Host.CreateDefaultBuilder(args)
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton<IStateMachine, StateMachine>();
+                foreach (var states in TypeOf<IState>.Inheritors)
+                    services.AddSingleton(states);
+                services.AddSingleton<MenuProducts>();
+                services.AddSingleton<BasketProducts>();
+            });
+
+        using var host = hostBuilder.Build();
+
+        var sm = host.Services.GetRequiredService<IStateMachine>();
+
         Console.WriteLine("Добро пожаловать в магазин Vamiro!");
         Console.WriteLine("Произведите любой ввод...");
         Console.ReadLine();
         Console.Clear();
-        StateMachine.ChangeState(MenuState);
+
+        sm.ChangeState<MenuState>();
     }
 }

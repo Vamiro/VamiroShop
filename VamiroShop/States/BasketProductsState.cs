@@ -1,7 +1,18 @@
-﻿namespace ConsoleApp3.States;
+﻿using ConsoleApp3.Products;
+
+namespace ConsoleApp3.States;
 
 public class BasketProductsState : IState
 {
+    private readonly IStateMachine _stateMachine;
+    private readonly BasketProducts _basketProducts;
+
+    public BasketProductsState(IStateMachine stateMachine, BasketProducts basketProducts)
+    {
+        _stateMachine = stateMachine;
+        _basketProducts = basketProducts;
+    }
+
     public void Enter()
     {
         ShowOptions();
@@ -15,39 +26,39 @@ public class BasketProductsState : IState
 
     public void InputHandler()
     {
-        bool flag = true;
+        var flag = true;
         do
         {
-            List<int> n = new List<int>();
-            string[] str = Console.ReadLine().Split();
-            
-            if (str[0].ToLower() == "оформить" && Program.BasketProducts.ProductsInBasket.Count > 0)
+            var n = new List<int>();
+            var str = Console.ReadLine().Split();
+
+            if (str[0].ToLower() == "оформить" && _basketProducts.ProductsInBasket.Count > 0)
             {
                 Console.WriteLine("Спасибо, что пользуетесь нашим сервисом!\nЗаказ оформлен, ожидайте курьера!");
-                Program.BasketProducts.ClearBasket();
+                _basketProducts.ClearBasket();
                 Console.WriteLine("Произведите любой ввод...");
                 Console.ReadLine();
-                Program.StateMachine.ChangeState(Program.MenuState);
+                _stateMachine.ChangeState<MenuState>();
             }
             else
             {
                 foreach (var s in str)
                 {
                     int buf;
-                    Int32.TryParse(s, out buf);
+                    int.TryParse(s, out buf);
                     n.Add(buf);
                 }
 
                 switch (n[0])
                 {
-                    case > 0 when n[0] <= Program.BasketProducts.ProductsInBasket.Count:
-                        Program.BasketProducts.RemoveProductFromBasket(n[0], n.Count == 2 ? n[1] : 0);
+                    case > 0 when n[0] <= _basketProducts.ProductsInBasket.Count:
+                        _basketProducts.RemoveProductFromBasket(n[0], n.Count == 2 ? n[1] : 0);
                         Console.Clear();
                         ShowOptions();
                         break;
 
                     case -1:
-                        Program.StateMachine.ChangeState(Program.MenuState);
+                        _stateMachine.ChangeState<MenuState>();
                         flag = false;
                         break;
 
@@ -61,7 +72,7 @@ public class BasketProductsState : IState
 
     public void ShowOptions()
     {
-        Program.BasketProducts.ShowBasketProducts();
+        _basketProducts.ShowBasketProducts();
         Console.WriteLine(
             "Если вы хотите осуществить оформление заказа введите \"оформить\"");
         Console.WriteLine(
