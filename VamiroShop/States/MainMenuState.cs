@@ -41,16 +41,16 @@ public class MainMenuState : IState
                 switch (n)
                 {
                     case 1:
-                        _stateMachine.ChangeState<LogInState>();
                         flag = false;
+                        _stateMachine.ChangeState<LogInState>();
                         break;
                     case 2:
-                        _stateMachine.ChangeState<SingUpState>();
                         flag = false;
+                        _stateMachine.ChangeState<SingUpState>();
                         break;
                     case 3:
-                        _stateMachine.ChangeState<MenuState>();
                         flag = false;
+                        _stateMachine.ChangeState<MenuState>();
                         break;
                     default:
                         Console.WriteLine("Пожалуйста, выберите опцию из списка.");

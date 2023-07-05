@@ -15,9 +15,7 @@ public class RedactorState : IState
 
     public void Enter()
     {
-        _menuProducts.ShowMenuProducts();
-        Console.WriteLine(
-            "Введите номер продукта который хотите выбрать или введите название нового продукта");
+        StartScreen();
         InputHandler();
     }
 
@@ -26,74 +24,96 @@ public class RedactorState : IState
         Console.Clear();
     }
 
+    private void StartScreen()
+    {
+        _menuProducts.ShowMenuProducts();
+        Console.WriteLine(
+            "Введите номер продукта который хотите выбрать или введите название нового продукта");
+    }
+
     public void InputHandler()
     {
+        var flag = true;
 
-        var str = Console.ReadLine();
-        int.TryParse(str, out int n);
-        
-        switch (n)
+        do
         {
-            case 0 when str.Length > 0:
-                AddingProduct(str);
-                break;
-            case -1:
-                _stateMachine.ChangeState<MenuState>();
-                break;
-            case > 0 when n <= _menuProducts.ProductsList.Count:
-                RedactProduct(n);
-                break;
-            default:
-                Console.WriteLine("Пожалуйста совершите ввод согласно правилам.");
-                InputHandler();
-                break;
-        }
+            var str = Console.ReadLine();
+            int.TryParse(str, out var n);
+
+            switch (n)
+            {
+                case 0 when str.Length > 0:
+                    AddingProduct(str);
+                    break;
+                case -1:
+                    _stateMachine.ChangeState<MenuState>();
+                    flag = false;
+                    break;
+                case > 0 when n <= _menuProducts.ProductsList.Count:
+                    RedactProduct(n);
+                    break;
+                default:
+                    Console.WriteLine("Пожалуйста совершите ввод согласно правилам.");
+                    break;
+            }
+
+            Console.WriteLine("Ожидается ввод...");
+            Console.ReadLine();
+            Console.Clear();
+            StartScreen();
+        } while (flag);
     }
 
     private void AddingProduct(string name)
     {
+        var flag = true;
         Console.WriteLine($"Введите ценник для продукта \"{name}\". Или -1 для отмены операции.");
-        int.TryParse(Console.ReadLine(), out int price);
-        if (price <= 0)
+
+        do
         {
-            if (price == -1)
+            int.TryParse(Console.ReadLine(), out var price);
+
+            if (price <= 0)
             {
-                Console.Clear();
-                Enter();
+                if (price == -1) flag = false;
+                Console.WriteLine("Некоректный ввод.");
             }
-            Console.WriteLine("Некоректный ввод.");
-            AddingProduct(name);
-        }
-        else
-        {
-            _menuProducts.AddProduct(name, price);
-            Console.WriteLine("Продукт успешно добавлен.");
-        }
+            else
+            {
+                _menuProducts.AddProduct(name, price);
+                Console.WriteLine("Продукт успешно добавлен.");
+                flag = false;
+            }
+        } while (flag);
     }
 
     private void RedactProduct(int i)
     {
+        var flag = true;
         Console.WriteLine("Введите \"Удалить\" или новую цену. Или -1 для отмены операции.");
-        string s = Console.ReadLine();
-        int.TryParse(s, out int price);
-        if (price <= 0)
+
+        do
         {
-            if (price == -1)
+            var s = Console.ReadLine();
+            int.TryParse(s, out var price);
+
+            if (s.ToLower() == "удалить")
             {
-                Console.Clear();
-                Enter();
+                _menuProducts.RemoveProduct(i);
+                Console.WriteLine("Продукт успешно удален.");
+                flag = false;
             }
-            Console.WriteLine("Некоректный ввод.");
-            RedactProduct(i);
-        }
-        else if (s.ToLower() == "удалить")
-        {
-            _menuProducts.RemoveProduct(i);
-            Console.WriteLine("Продукт успешно удален.");
-        }
-        else{
-            _menuProducts.ChangeProductsPrice(price, i);
-            Console.WriteLine("Цена продукта успешно изменена.");
-        }
+            else if (price <= 0)
+            {
+                if (price == -1) flag = false;
+                Console.WriteLine("Некоректный ввод.");
+            }
+            else
+            {
+                _menuProducts.ChangeProductsPrice(price, i);
+                Console.WriteLine("Цена продукта успешно изменена.");
+                flag = false;
+            }
+        } while (flag);
     }
 }
