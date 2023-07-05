@@ -5,10 +5,10 @@ namespace ConsoleApp3.States;
 public class MenuProductsState : IState
 {
     private readonly IStateMachine _stateMachine;
-    private readonly MenuProducts _menuProducts;
-    private readonly BasketProducts _basketProducts;
+    private readonly IMenuProducts _menuProducts;
+    private readonly IBasketProducts _basketProducts;
 
-    public MenuProductsState(IStateMachine stateMachine, BasketProducts basketProducts, MenuProducts menuProducts)
+    public MenuProductsState(IStateMachine stateMachine, IBasketProducts basketProducts, IMenuProducts menuProducts)
     {
         _stateMachine = stateMachine;
         _basketProducts = basketProducts;

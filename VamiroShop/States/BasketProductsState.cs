@@ -5,9 +5,9 @@ namespace ConsoleApp3.States;
 public class BasketProductsState : IState
 {
     private readonly IStateMachine _stateMachine;
-    private readonly BasketProducts _basketProducts;
+    private readonly IBasketProducts _basketProducts;
 
-    public BasketProductsState(IStateMachine stateMachine, BasketProducts basketProducts)
+    public BasketProductsState(IStateMachine stateMachine, IBasketProducts basketProducts)
     {
         _stateMachine = stateMachine;
         _basketProducts = basketProducts;
