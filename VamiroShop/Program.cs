@@ -15,8 +15,8 @@ internal class Program
                 services.AddSingleton<IStateMachine, StateMachine>();
                 foreach (var states in TypeOf<IState>.Inheritors)
                     services.AddSingleton(states);
-                services.AddSingleton<MenuProducts>();
-                services.AddSingleton<BasketProducts>();
+                services.AddSingleton<IMenuProducts, MenuProducts>();
+                services.AddSingleton<IBasketProducts, BasketProducts>();
             });
 
         using var host = hostBuilder.Build();

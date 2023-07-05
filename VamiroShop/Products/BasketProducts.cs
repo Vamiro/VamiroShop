@@ -1,6 +1,6 @@
 ﻿namespace ConsoleApp3.Products;
 
-public class BasketProducts
+public class BasketProducts : IBasketProducts
 {
     public List<ProductInBasket> ProductsInBasket { get; }
     

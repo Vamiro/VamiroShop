@@ -1,6 +1,6 @@
 ﻿namespace ConsoleApp3.Products;
 
-public class MenuProducts
+public class MenuProducts : IMenuProducts
 {
     public List<Product> ProductsList { get; private set; }
     
