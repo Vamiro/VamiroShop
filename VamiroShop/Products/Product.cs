@@ -4,7 +4,7 @@ public class Product
 {
     public readonly int Id;
     public readonly string Name;
-    public readonly decimal Price;
+    public decimal Price { get; private set; }
 
     public Product(string name, decimal price)
     {
@@ -20,5 +20,10 @@ public class Product
             result += c;
 
         return result;
+    }
+
+    public void ChangePrice(decimal newPrice)
+    {
+        Price = newPrice;
     }
 }

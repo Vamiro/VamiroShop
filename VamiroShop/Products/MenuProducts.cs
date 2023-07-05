@@ -44,4 +44,9 @@ public class MenuProducts : IMenuProducts
         var p = GetProductByNumber(product);
         ProductsList.Remove(p);
     }
+
+    public void ChangeProductsPrice(int price, int i)
+    {
+        GetProductByNumber(i).ChangePrice(price);
+    }
 }

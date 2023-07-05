@@ -7,4 +7,5 @@ public interface IMenuProducts
     Product GetProductByNumber(int i);
     void AddProduct(string name, decimal price);
     void RemoveProduct(int product);
+    void ChangeProductsPrice(int price, int i);
 }

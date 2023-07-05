@@ -4,6 +4,7 @@ using ConsoleApp3.States;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VamiroShop;
+using VamiroShop.User;
 
 internal class Program
 {
@@ -17,6 +18,7 @@ internal class Program
                     services.AddSingleton(states);
                 services.AddSingleton<IMenuProducts, MenuProducts>();
                 services.AddSingleton<IBasketProducts, BasketProducts>();
+                services.AddSingleton<IUsersManager, UsersManager>();
             });
 
         using var host = hostBuilder.Build();
@@ -28,6 +30,6 @@ internal class Program
         Console.ReadLine();
         Console.Clear();
 
-        sm.ChangeState<MenuState>();
+        sm.ChangeState<MainMenuState>();
     }
 }
